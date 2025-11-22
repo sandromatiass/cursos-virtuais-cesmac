@@ -1,0 +1,8 @@
+{% extends 'education/base.html' %}
+
+{% block content %}
+<h1>Alunos Cadastrados</h1>
+{% for aluno in alunos %}
+    <p>{{ aluno.nome }} {{ aluno.sobrenome }} - {{ aluno.email }}</p>
+{% endfor %}
+{% endblock %}

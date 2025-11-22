@@ -1,0 +1,22 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ title }} | Sistema Educacional CESMAC{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">
+    <a href="{% url 'admin:index' %}">
+        Sistema Educacional CESMAC
+    </a>
+</h1>
+{% endblock %}
+
+{% block nav-global %}
+<div style="background: #417690; padding: 10px; margin: -10px -10px 10px -10px;">
+    <div style="max-width: 1200px; margin: 0 auto;">
+        <a href="/" style="color: white; margin-right: 20px; text-decoration: none;">Início</a>
+        <a href="/alunos/" style="color: white; margin-right: 20px; text-decoration: none;">Alunos</a>
+        <a href="/cursos/" style="color: white; margin-right: 20px; text-decoration: none;">Cursos</a>
+        <a href="{% url 'admin:index' %}" style="color: white; margin-right: 20px; text-decoration: none;">Admin</a>
+    </div>
+</div>
+{% endblock %}

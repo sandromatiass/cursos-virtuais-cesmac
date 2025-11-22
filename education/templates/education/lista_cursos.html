@@ -1,0 +1,9 @@
+{% extends 'education/base.html' %}
+
+{% block content %}
+<h1>Cursos Cadastrados</h1>
+{% for curso in cursos %}
+    <h3>{{ curso.titulo }}</h3>
+    <p>{{ curso.descricao }}</p>
+{% endfor %}
+{% endblock %}
