@@ -1,22 +1,66 @@
-{% extends "admin/base.html" %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Educacional CESMAC</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        .navbar-custom {
+            background-color: #2c3e50;
+        }
+        .navbar-custom .navbar-brand,
+        .navbar-custom .nav-link {
+            color: white !important;
+        }
+        .footer-custom {
+            background-color: #34495e;
+            color: white;
+            padding: 20px 0;
+            margin-top: 40px;
+        }
+        .main-content {
+            min-height: calc(100vh - 160px);
+            padding: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">
+                🎓 Sistema Educacional CESMAC
+            </a>
+            
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="{% url 'home' %}">Home</a>
+                <a class="nav-link" href="{% url 'lista_alunos' %}">Alunos</a>
+                <a class="nav-link" href="{% url 'lista_cursos' %}">Cursos</a>
+                <a class="nav-link" href="{% url 'produto_new' %}">Novo Produto</a>
+                <a class="nav-link" href="/admin/">Admin</a>
+            </div>
+        </div>
+    </nav>
 
-{% block title %}{{ title }} | Sistema Educacional CESMAC{% endblock %}
 
-{% block branding %}
-<h1 id="site-name">
-    <a href="{% url 'admin:index' %}">
-        Sistema Educacional CESMAC
-    </a>
-</h1>
-{% endblock %}
+    <main class="main-content">
+        <div class="container">
+            {% block content %}
+           
+            {% endblock %}
+        </div>
+    </main>
 
-{% block nav-global %}
-<div style="background: #417690; padding: 10px; margin: -10px -10px 10px -10px;">
-    <div style="max-width: 1200px; margin: 0 auto;">
-        <a href="/" style="color: white; margin-right: 20px; text-decoration: none;">Início</a>
-        <a href="/alunos/" style="color: white; margin-right: 20px; text-decoration: none;">Alunos</a>
-        <a href="/cursos/" style="color: white; margin-right: 20px; text-decoration: none;">Cursos</a>
-        <a href="{% url 'admin:index' %}" style="color: white; margin-right: 20px; text-decoration: none;">Admin</a>
-    </div>
-</div>
-{% endblock %}
+
+    <footer class="footer-custom">
+        <div class="container text-center">
+            <p>&copy; 2024 Sistema Educacional CESMAC. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+   
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,158 +1,171 @@
-# 🎓 Sistema Educacional CESMAC - Documentação do Projeto
+# 🎓 Sistema Educacional CESMAC
 
-## 📋 Sobre o Projeto
+Sistema completo para gerenciamento de alunos, cursos e produtos desenvolvido em Django.
 
-Sistema web desenvolvido em Django para gerenciamento de alunos e cursos, criado para atender instituições educacionais. A primeira versão inclui funcionalidades completas de CRUD para alunos e cursos, com interface administrativa personalizada.
+## ✨ Funcionalidades
 
-## 🚀 Primeira Versão - Funcionalidades Implementadas
+### ✅ Implementadas
+- **Gestão de Alunos** - Cadastro e listagem de alunos
+- **Gestão de Cursos** - Cadastro e listagem de cursos  
+- **Gestão de Produtos** - Cadastro e listagem de produtos
+- **Interface Admin** - Painel administrativo completo
+- **Formulários Web** - Cadastro de produtos via interface web
+- **Templates Responsivos** - Interface moderna com Bootstrap
+- **Banco de Dados** - SQLite (desenvolvimento) / PostgreSQL (produção)
 
-### ✅ Funcionalidades Principais
+### 🎯 Modelos do Sistema
+- **Aluno** - nome, sobrenome, email, telefone, cursos (relacionamento)
+- **Curso** - título, descrição, duração, preço
+- **Produto** - nome, descrição, preço, validade
 
-1. **Gestão de Alunos**
-   - Cadastro com nome, sobrenome e email
-   - Matrícula em múltiplos cursos
-   - Listagem pública de alunos
+## 🚀 Como Executar
 
-2. **Gestão de Cursos** 
-   - Cadastro com título e descrição
-   - Associação de alunos matriculados
-   - Listagem pública de cursos
+### Pré-requisitos
+- Python 3.8+
+- Django 5.2+
+- PostgreSQL (opcional para produção)
 
-3. **Interface Administrativa**
-   - Painel admin personalizado com identidade visual
-   - Navegação fixa entre páginas
-   - Filtros e buscas avançadas
+### Instalação Local
 
-4. **Interface Pública**
-   - Página inicial com dashboard
-   - Listagens responsivas
-   - Design moderno e profissional
+1. **Clone o repositório**
+```bash
+git clone <repository-url>
+cd cursos-virtuais-cesmac
+```
+
+2. **Configure ambiente virtual**
+```bash
+python -m venv venv
+venv\Scripts\activate  # Windows
+source venv/bin/activate  # Linux/Mac
+```
+
+3. **Instale dependências**
+```bash
+pip install -r requirements.txt
+```
+
+4. **Configure variáveis de ambiente**
+```env
+# .env
+SECRET_KEY=sua-chave-secreta-aqui
+DEBUG=True
+ALLOWED_HOSTS=localhost,127.0.0.1
+DATABASE_URL=sqlite:///db.sqlite3
+```
+
+5. **Execute migrações**
+```bash
+python manage.py makemigrations
+python manage.py migrate
+```
+
+6. **Crie superusuário**
+```bash
+python manage.py createsuperuser
+```
+
+7. **Execute servidor**
+```bash
+python manage.py runserver
+```
+
+## 🌐 Deploy no Vercel
+
+### Configuração para Produção
+
+1. **Variáveis de ambiente no Vercel:**
+```env
+SECRET_KEY=sua-chave-secreta-producao
+DEBUG=False
+ALLOWED_HOSTS=.vercel.app,.now.sh
+DATABASE_URL=postgres://usuario:senha@host:porta/banco
+```
+
+2. **Arquivos de configuração:**
+- `vercel.json` - Configuração do deploy
+- `api/index.py` - Handler WSGI para Vercel
+- `build_files.sh` - Script de build
+
+### Estrutura do Projeto
+```
+cursos-virtuais-cesmac/
+├── api/
+│   └── index.py              # Handler Vercel
+├── backend/
+│   ├── settings.py           # Configurações
+│   ├── urls.py               # URLs principais
+│   └── wsgi.py               # WSGI application
+├── education/
+│   ├── models.py             # Modelos Aluno, Curso, Produto
+│   ├── views.py              # Views do sistema
+│   ├── forms.py              # Formulários
+│   ├── admin.py              # Configuração Admin
+│   ├── urls.py               # URLs da app
+│   └── templates/            # Templates
+├── requirements.txt          # Dependências
+├── vercel.json              # Config Vercel
+└── build_files.sh           # Script build
+```
+
+## 📊 URLs Disponíveis
+
+| Rota | Descrição |
+|------|-----------|
+| `/` | Página inicial com estatísticas |
+| `/admin/` | Painel administrativo Django |
+| `/alunos/` | Lista de alunos cadastrados |
+| `/cursos/` | Lista de cursos disponíveis |
+| `/produtos/` | Lista de produtos cadastrados |
+| `/produtos/novo/` | Formulário de novo produto |
 
 ## 🛠 Tecnologias Utilizadas
 
 - **Backend:** Django 5.2.8
-- **Frontend:** HTML5, CSS3, Font Awesome
-- **Database:** SQLite (Desenvolvimento) / PostgreSQL (Produção)
-- **Deploy:** Vercel + PostgreSQL
+- **Database:** SQLite3 / PostgreSQL
+- **Frontend:** HTML5, CSS3, Bootstrap 5
+- **Deploy:** Vercel
+- **Environment:** python-dotenv
+- **Static Files:** WhiteNoise
 
-## 📁 Estrutura do Projeto
+## 📝 Desenvolvimento
 
-```
-cursos-virtuais-cesmac/
-├── backend/                 # Configurações do projeto Django
-├── education/              # App principal
-│   ├── models.py           # Modelos Aluno e Curso
-│   ├── admin.py            # Configurações do admin
-│   ├── views.py            # Views públicas
-│   ├── urls.py             # URLs do app
-│   └── templates/          # Templates organizados
-├── vercel.json            # Configuração do Vercel
-├── build_files.sh         # Script de build
-├── requirements.txt       # Dependências Python
-└── manage.py             # Gerenciador Django
-```
-
-## 🔧 Processo de Desenvolvimento - Versão 1.0
-
-### Fase 1: Configuração Inicial ✅
-- [x] Setup do projeto Django
-- [x] Configuração do ambiente de desenvolvimento
-- [x] Criação do app `education`
-
-### Fase 2: Modelagem de Dados ✅
-- [x] Definição do modelo `Aluno`
-- [x] Definição do modelo `Curso` 
-- [x] Relacionamento Many-to-Many entre Aluno e Curso
-- [x] Migrações do banco de dados
-
-### Fase 3: Interface Administrativa ✅
-- [x] Registro dos modelos no admin
-- [x] Personalização do Django Admin
-- [x] Filtros e campos de busca
-- [x] Interface personalizada com navegação fixa
-
-### Fase 4: Views e Templates Públicos ✅
-- [x] Página inicial com dashboard
-- [x] Listagem de alunos
-- [x] Listagem de cursos  
-- [x] Templates responsivos e modernos
-- [x] Navegação entre páginas
-
-### Fase 5: Personalização e Estilo ✅
-- [x] Identidade visual consistente
-- [x] Ícones profissionais (Font Awesome)
-- [x] Design responsivo
-- [x] Experiência de usuário otimizada
-
-### Fase 6: Preparação para Produção ✅
-- [x] Configuração para deploy no Vercel
-- [x] Setup do PostgreSQL
-- [x] Configuração de static files
-- [x] Variáveis de ambiente
-
-## 🎯 Decisões de Arquitetura
-
-### Modelagem de Dados
-```python
-# Relacionamento Many-to-Many otimizado
-class Aluno(models.Model):
-    cursos = models.ManyToManyField(Curso, related_name='alunos')
-```
-
-### Segurança
-- Verificação de autenticação no admin
-- Usuários staff para acesso administrativo
-- Configurações seguras para produção
-
-### UX/UI
-- Navegação fixa para fácil acesso
-- Ícones intuitivos
-- Design consistente entre admin e site público
-
-## 📊 Entregáveis da Versão 1.0
-
-- [x] **Sistema completo de gestão educacional**
-- [x] **Interface administrativa personalizada** 
-- [x] **Site público funcional**
-- [x] **Documentação técnica**
-- [x] **Configuração para produção**
-
-
-## 🚀 Como Executar o Projeto
-
-### Desenvolvimento Local
+### Comandos Úteis
 ```bash
-# Clone o repositório
-git clone <url-do-repositorio>
-cd cursos-virtuais-cesmac
+# Criar migrações
+python manage.py makemigrations
 
-# Instale dependências
-pip install -r requirements.txt
-
-# Execute migrações
+# Aplicar migrações
 python manage.py migrate
 
-# Crie superuser
+# Criar superusuário
 python manage.py createsuperuser
 
-# Execute o servidor
-python manage.py runserver
+# Coletar arquivos estáticos
+python manage.py collectstatic
+
+# Verificar migrações
+python manage.py showmigrations
 ```
 
-### Produção (Vercel)
-```bash
-# Deploy automático via GitHub
-# Ou usando Vercel CLI
-vercel --prod
-```
+### Estrutura de Desenvolvimento
+- **Models:** `education/models.py`
+- **Views:** `education/views.py` 
+- **Forms:** `education/forms.py`
+- **Templates:** `education/templates/education/`
+- **Admin:** `education/admin.py`
 
-## 👥 Equipe e Contribuições
+## 🔧 Configuração de Produção
 
-**Desenvolvido por:** Sandro Matias  
-**Tecnologias:** Django, Python, HTML5, CSS3  
-**Deploy:** Vercel + PostgreSQL
+### Segurança
+- DEBUG=False
+- SECURE_SSL_REDIRECT=True
+- CSRF_COOKIE_SECURE=True
+- SESSION_COOKIE_SECURE=True
 
----
+### Banco de Dados
+- PostgreSQL no Supabase (Vercel)
+- SQLite (desenvolvimento)
 
-*Documentação atualizada em Novembro de 2025*  
-*Sistema Educacional CESMAC - Versão 1.0*
+
+**Desenvolvido para o Sistema Educacional CESMAC** 🎓

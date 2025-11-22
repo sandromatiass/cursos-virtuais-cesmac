@@ -79,7 +79,7 @@ def get_database_config():
     
     database_url = os.environ.get('DATABASE_URL')
     
-    print("🔍 ANALISANDO CONFIGURAÇÃO DO BANCO:")
+    print("ANALISANDO CONFIGURAÇÃO DO BANCO:")
     print(f"   DATABASE_URL: {'Definida' if database_url else ' Não definida'}")
     
     # Se dj_database_url está disponível e DATABASE_URL existe
@@ -89,7 +89,6 @@ def get_database_config():
             return dj_database_url.config(
                 conn_max_age=600,
                 conn_health_checks=True,
-                ssl_require=True
             )
         except Exception as e:
             print(f"Erro no dj-database-url: {e}")
