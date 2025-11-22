@@ -1,47 +1,8 @@
 {% extends 'education/base.html' %}
 
 {% block content %}
-
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-<style>
-    .page-title {
-        color: #2c3e50;
-        margin-bottom: 30px;
-        border-bottom: 2px solid #3498db;
-        padding-bottom: 10px;
-    }
-    .aluno-card {
-        background: #f8f9fa;
-        border-left: 4px solid #3498db;
-        padding: 15px;
-        margin-bottom: 15px;
-        border-radius: 5px;
-    }
-    .back-btn {
-        margin-top: 20px;
-    }
-</style>
-
-<div class="container">
-    <h1 class="page-title">Alunos Cadastrados</h1>
-    
-    {% if alunos %}
-        {% for aluno in alunos %}
-            <div class="aluno-card">
-                <h5>{{ aluno.nome }} {{ aluno.sobrenome }}</h5>
-                <p class="mb-1"><strong>Email:</strong> {{ aluno.email }}</p>
-                {% if aluno.telefone %}
-                    <p class="mb-0"><strong>Telefone:</strong> {{ aluno.telefone }}</p>
-                {% endif %}
-            </div>
-        {% endfor %}
-    {% else %}
-        <div class="alert alert-info">
-            Nenhum aluno cadastrado no momento.
-        </div>
-    {% endif %}
-    
-    <a href="{% url 'home' %}" class="btn btn-primary back-btn">← Voltar para Home</a>
-</div>
+<h1>Alunos Cadastrados</h1>
+{% for aluno in alunos %}
+    <p>{{ aluno.nome }} {{ aluno.sobrenome }} - {{ aluno.email }}</p>
+{% endfor %}
 {% endblock %}

@@ -13,44 +13,54 @@
 
 {% block extrastyle %}
 <style>
-    .cesmac-nav {
+
+    .cesmac-footer {
         background: #2c3e50;
-        padding: 10px 0;
-        margin: -10px -10px 20px -10px;
+        padding: 12px 0;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
     }
-    .cesmac-nav-container {
+    .cesmac-footer-container {
         max-width: 1200px;
         margin: 0 auto;
         padding: 0 15px;
         text-align: center;
     }
-    .cesmac-nav a {
+    .cesmac-footer a {
         color: white;
-        margin: 0 15px;
+        margin: 0 10px;
         text-decoration: none;
         font-weight: bold;
-        padding: 8px 16px;
+        padding: 6px 12px;
         border-radius: 4px;
         transition: background 0.3s;
         display: inline-block;
+        font-size: 13px;
     }
-    .cesmac-nav a:hover {
+    .cesmac-footer a:hover {
         background: #3498db;
         color: white;
+    }
+    
+    #content {
+        padding-bottom: 60px !important;
     }
 </style>
 {% endblock %}
 
-{% block content %}
+{% block footer %}
+{# Só mostra o rodapé se o usuário estiver autenticado #}
 {% if user.is_authenticated %}
-<div class="cesmac-nav">
-    <div class="cesmac-nav-container">
+<div class="cesmac-footer">
+    <div class="cesmac-footer-container">
         <a href="/">Home</a>
         <a href="/alunos/">Alunos</a>
         <a href="/cursos/">Cursos</a>
     </div>
 </div>
 {% endif %}
-
-{{ block.super }}
 {% endblock %}
