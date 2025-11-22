@@ -1,7 +1,12 @@
 import os
 from pathlib import Path
-import dj_database_url
 from django.core.management.utils import get_random_secret_key
+
+
+try:
+    import dj_database_url
+except ImportError:
+    dj_database_url = None
 
 try:
     from dotenv import load_dotenv
@@ -23,7 +28,7 @@ DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
 # Custom admin URL for security
-DJANGO_ADMIN_URL = os.environ.get('DJANGO_ADMIN_URL', 'admin/') + '/'
+DJANGO_ADMIN_URL = os.environ.get('DJANGO_ADMIN_URL', 'admin/')
 
 # Application definition
 INSTALLED_APPS = [
@@ -69,21 +74,104 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
-# Database Configuration
+# Database Configuration - ROBUSTA
+def get_database_config():
+    
+    database_url = os.environ.get('DATABASE_URL')
+    
+    print("🔍 ANALISANDO CONFIGURAÇÃO DO BANCO:")
+    print(f"   DATABASE_URL: {'Definida' if database_url else ' Não definida'}")
+    
+    # Se dj_database_url está disponível e DATABASE_URL existe
+    if dj_database_url and database_url:
+        try:
+            print("Usando dj-database-url")
+            return dj_database_url.config(
+                conn_max_age=600,
+                conn_health_checks=True,
+                ssl_require=True
+            )
+        except Exception as e:
+            print(f"Erro no dj-database-url: {e}")
+    
+    if database_url and ('postgres://' in database_url or 'postgresql://' in database_url):
+        print("Tentando conexão PostgreSQL manual")
+        try:
+            
+            url_without_protocol = database_url.replace('postgres://', '').replace('postgresql://', '')
+            user_pass, host_port_db = url_without_protocol.split('@')
+            user, password = user_pass.split(':')
+            host_port, database_with_params = host_port_db.split('/')
+            database = database_with_params.split('?')[0]
+            
+            if ':' in host_port:
+                host, port = host_port.split(':')
+            else:
+                host, port = host_port, '5432'
+            
+            config = {
+                'ENGINE': 'django.db.backends.postgresql',
+                'NAME': database,
+                'USER': user,
+                'PASSWORD': password,
+                'HOST': host,
+                'PORT': port,
+                'OPTIONS': {
+                    'sslmode': 'require',
+                },
+            }
+            print(f"PostgreSQL configurado: {host}:{port}")
+            return config
+            
+        except Exception as e:
+            print(f"Erro no parse PostgreSQL: {e}")
+            print("Fallback para SQLite")
+    
+   
+    print(" Usando SQLite (fallback)")
+    return {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+
 DATABASES = {
-    'default': dj_database_url.config(
-        default='sqlite:///db.sqlite3',
-        conn_max_age=600,
-        conn_health_checks=True,
-        ssl_require=os.environ.get('DATABASE_SSL', 'False') == 'True'
-    )
+    'default': get_database_config()
 }
 
-if os.environ.get('VERCEL'):
-    DATABASES['default'] = dj_database_url.config(
-        conn_max_age=600,
-        ssl_require=True
-    )
+print("TESTANDO CONEXÃO COM O BANCO...")
+try:
+    # Importação condicional do PostgreSQL
+    db_engine = DATABASES['default']['ENGINE']
+    
+    if 'postgresql' in db_engine:
+        # Tenta importar psycopg2
+        try:
+            import psycopg2
+            print("psycopg2 disponível")
+        except ImportError:
+            print("psycopg2 não instalado. Instale com: pip install psycopg2-binary")
+            # Força fallback para SQLite
+            DATABASES['default'] = {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': BASE_DIR / 'db.sqlite3',
+            }
+            print("Alternado para SQLite")
+    
+    # Testa a conexão final
+    from django.db import connections
+    connection = connections['default']
+    connection.ensure_connection()
+    print(f"Conexão bem-sucedida com: {DATABASES['default']['ENGINE']}")
+    
+except Exception as e:
+    print(f"Erro na conexão: {e}")
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+    print("   🔄 Fallback final para SQLite")
+
+print("=" * 50)
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -119,6 +207,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 IS_PRODUCTION = os.environ.get('VERCEL') or os.environ.get('DATABASE_URL') or not DEBUG
 
 if IS_PRODUCTION:
+    print("Configurações de PRODUÇÃO ativadas")
     # Security settings for production
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
@@ -147,21 +236,8 @@ if IS_PRODUCTION:
     # Ensure Vercel hosts are included
     ALLOWED_HOSTS.extend(['.vercel.app', '.now.sh'])
     
-    # Logging configuration for production
-    LOGGING = {
-        'version': 1,
-        'disable_existing_loggers': False,
-        'handlers': {
-            'console': {
-                'class': 'logging.StreamHandler',
-            },
-        },
-        'root': {
-            'handlers': ['console'],
-            'level': 'WARNING',
-        },
-    }
 else:
+    print("💻 Configurações de DESENVOLVIMENTO ativadas")
     SECURE_SSL_REDIRECT = False
     CSRF_COOKIE_SECURE = False
     SESSION_COOKIE_SECURE = False
@@ -171,9 +247,13 @@ else:
         INSTALLED_APPS += ['debug_toolbar']
         MIDDLEWARE = ['debug_toolbar.middleware.DebugToolbarMiddleware'] + MIDDLEWARE
         INTERNAL_IPS = ['127.0.0.1']
+        print("Debug Toolbar ativado")
     except ImportError:
-        pass
+        print("ℹDebug Toolbar não instalado")
 
 # Custom admin URL security
 if DJANGO_ADMIN_URL != 'admin/':
     ADMIN_URL = DJANGO_ADMIN_URL.strip('/')
+
+print("Configuração do Django concluída!")
+print("=" * 50)
