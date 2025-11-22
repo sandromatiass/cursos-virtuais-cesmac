@@ -3,11 +3,12 @@
   "builds": [
     {
       "src": "api/index.py",
-      "use": "@vercel/python"
-    },
-    {
-      "src": "build_files.sh",
-      "use": "@vercel/static-build"
+      "use": "@vercel/python",
+      "config": {
+        "maxLambdaSize": "15mb",
+        "installCommand": "pip install -r requirements.txt",
+        "buildCommand": "python manage.py collectstatic --noinput"
+      }
     }
   ],
   "routes": [
@@ -16,14 +17,15 @@
       "dest": "/static/$1"
     },
     {
+      "src": "/admin(.*)",
+      "dest": "/api/index.py"
+    },
+    {
       "src": "/(.*)",
       "dest": "/api/index.py"
     }
   ],
   "env": {
-    "PYTHONPATH": "/vercel/path0",
-    "SECURE_SSL_REDIRECT": "true",
-    "CSRF_COOKIE_SECURE": "true",
-    "SESSION_COOKIE_SECURE": "true"
+    "PYTHONPATH": "/vercel/path0"
   }
 }
